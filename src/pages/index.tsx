@@ -1,28 +1,34 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.css";
-import Link from "next/link";
-
-const inter = Inter({ subsets: ["latin"] });
+import { useState } from "react";
+import FileInput from "../components/FileInput";
+import { UiFileInputButton } from "@/components/Uploader";
 
 export default function Home() {
-  const handleClick = async () => {
+  const handleCreateLayer = async () => {
     await fetch("/api/layers/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ layerName: "Random", userId: 420 }),
+      body: JSON.stringify({
+        layerName: newLayerName,
+        userId: localStorage.getItem("userId"),
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
       });
   };
+  const [newLayerName, setNewLayerName] = useState("");
   return (
     <>
-      <button onClick={() => handleClick()}>Mkdir</button>
+      <input
+        value={newLayerName}
+        onChange={(e) => setNewLayerName(e.target.value)}
+      />
+      <UiFileInputButton />
+      <button onClick={() => handleCreateLayer()}>Create Layer</button>
+      <FileInput />
     </>
   );
 }

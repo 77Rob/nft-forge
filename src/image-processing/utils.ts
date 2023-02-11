@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 export const createDirectory = (directoryPath: string) => {
+  console.log(directoryPath);
   const directories = directoryPath.split("/");
   let currentPath = "";
 
@@ -55,3 +56,27 @@ export const deleteDirectory = (directoryPath: string) => {
     });
   });
 };
+
+export async function ensureDirectoryExistence(
+  directoryPath: string
+): Promise<void> {
+  const dirname = path.dirname(directoryPath);
+  let dirExists = await new Promise<boolean>((resolve) => {
+    fs.exists(dirname, (exists) => {
+      resolve(exists);
+    });
+  });
+
+  if (!dirExists) {
+    await ensureDirectoryExistence(dirname);
+    await new Promise<void>((resolve, reject) => {
+      fs.mkdir(dirname, (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+}

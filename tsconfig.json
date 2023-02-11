@@ -27,8 +27,8 @@
       "Utils/*": ["./src/utils/*"],
       "Public/": ["./public"],
       "Public/*": ["./public/*"],
-      "ImageProcessing/": ["./src/image-processing"],
-      "ImageProcessing/*": ["./src/image-processing/*"]
+      "ImageProcessing/": ["src/image-processing"],
+      "ImageProcessing/*": ["src/image-processing/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

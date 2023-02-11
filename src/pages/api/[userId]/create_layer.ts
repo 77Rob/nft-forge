@@ -12,7 +12,7 @@ export default function handler(
 ) {
   const { body } = req;
   const { layerName, userId } = body;
-  const directoryPath = `../../../image-processing/users/${userId}/${layerName}`;
+  const directoryPath = `./src/image-processing/users/${userId}/${layerName}`;
   createDirectory(directoryPath);
   res.status(200).json({ name: "John Doe" });
 }
