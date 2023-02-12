@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { themeChange } from "theme-change";
 import { Provider } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import store from "../store";
 
 export default function App({ Component, pageProps }: AppProps) {
   // https://github.com/saadeghi/theme-change
@@ -18,5 +19,9 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   });
 
-  return <Component {...pageProps} />;
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />;
+    </Provider>
+  );
 }

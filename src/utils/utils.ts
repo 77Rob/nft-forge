@@ -15,6 +15,7 @@ export const createDirectory = (directoryPath: string) => {
   }
   console.log("Done");
 };
+
 export const readDirectory = (directoryPath: string) => {
   fs.readdir(directoryPath, (error, files) => {
     if (error) {
