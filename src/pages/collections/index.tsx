@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserCollections from "@/components/collections";
+import UserCollections from "@/components/collection/UserCollections";
 import axios from "axios";
 import Router from "next/router";
 
@@ -31,8 +31,8 @@ const Collections = () => {
         click the {"'Create'"} button. Once your collection is created, you can
         add and manage layers and traits to make it truly your own. {"You'll"}{" "}
         be able to preview the generated art of your collection and see how it
-        evolves as you add and modify its components. So let's get started and
-        build something truly unique!
+        evolves as you add and modify its components. So {"let's"} get started
+        and build something truly unique!
       </h1>
       <div className="flex mb-12 w-1/2 gap-4 flex-col">
         <input

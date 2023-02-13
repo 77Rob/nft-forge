@@ -1,7 +1,6 @@
 import { useState } from "react";
-import FileInput from "../components/FileInput";
-import DragAndDrop from "@/components/DragAndDrop";
+import HeaderInput from "@/components/HeaderInput";
 
 export default function Home() {
-  return <></>;
+  return <> </>;
 }

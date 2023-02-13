@@ -18,7 +18,6 @@ export let themes = [
   {
     name: "🧁  cupcake",
     id: "cupcake",
-    Collection,
   },
   {
     name: "🐝  bumblebee",

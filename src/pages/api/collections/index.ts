@@ -9,11 +9,11 @@ export default async function handle(
 ) {
   const { query } = req;
   const { userId } = query;
-  const directoryPath = baseDirectory + `/${userId}`;
+  const directoryPath = baseDirectory + `/${userId}/collections`;
   try {
     const collections = await readDirectory(directoryPath);
     res.status(200).send(collections);
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send({ message: err });
   }
 }
