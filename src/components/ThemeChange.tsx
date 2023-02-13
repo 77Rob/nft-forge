@@ -25,18 +25,18 @@ const GearIcon = (props: SVGProps<SVGSVGElement>) => (
 export default function ThemeChange() {
   let dropdownClassNames = "";
   let btnClassNames = "btn-ghost";
-  let contentClassNames = "mt-8";
+  let contentClassNames = "mt-12";
   return (
-    <div className={`dropdown dropdown-end  ${dropdownClassNames}`}>
+    <div className={`dropdown dropdown-end ${dropdownClassNames}`}>
       <div
         tabIndex={0}
-        className={`btn space-between btn-sm gap-1 w-48 normal-case ${btnClassNames}`}
+        className={`btn space-between  gap-1 normal-case ${btnClassNames}`}
       >
         <div className="text-lg">Change Theme</div>
         <GearIcon className="w-8 fill-text-primary stroke-primary" />
       </div>
       <div
-        className={`dropdown-content bg-base-200 text-base-content rounded-t-box rounded-b-box top-px max-h-96 h-[70vh] w-48 overflow-y-auto shadow-2xl ${contentClassNames}`}
+        className={`dropdown-content  bg-base-200 text-base-content rounded-t-box rounded-b-box top-px max-h-96 h-[70vh] w-48 overflow-y-auto shadow-2xl ${contentClassNames}`}
       >
         <div className="grid grid-cols-1 gap-3 p-3" tabIndex={0}>
           {themes.map((theme) => (

@@ -1,14 +1,22 @@
 import axios from "axios";
 import React, { useState } from "react";
 
-const DragAndDrop = () => {
+const DragAndDrop = ({
+  collectionId,
+  layerId,
+}: {
+  collectionId: string;
+  layerId: string;
+}) => {
   const [files, setFiles] = useState<any>([]);
 
   const handleUploadImages = async (formData: any) => {
     const userId = localStorage.getItem("userId");
     const layerId = 1;
     const result = await axios
-      .post(`/api/${userId}/${layerId}/uploadImages`, files, {})
+      .post(`/api/collections/${collectionId}/${layerId}/uploadImages`, files, {
+        params: { userId: userId },
+      })
       .then((res) => console.log(res));
   };
 

@@ -5,16 +5,13 @@ const CreateNewLayer = () => {
   const dispatch = useAppDispatch();
   const [newLayerName, setNewLayerName] = useState("");
 
-  const handleCreateLayer = async () => {
-    dispatch();
-  };
   return (
     <div>
       <input
         value={newLayerName}
         onChange={(e) => setNewLayerName(e.target.value)}
       />
-      <button onClick={() => handleCreateLayer()}>Create Layer</button>
+      <button>Create Layer</button>
     </div>
   );
 };

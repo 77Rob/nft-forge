@@ -1,5 +1,6 @@
-import fs from "fs";
+import { readDirectory } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
+import { baseDirectory } from "@/api-config";
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,8 +8,8 @@ export default async function handler(
 ) {
   const { query } = req;
   const { userId } = query;
-  const directoryPath = `./src/image-processing/users/${userId}`;
-  const layerNames: string[] = await fs.promises.readdir(directoryPath);
+  const directoryPath = baseDirectory + `/users/${userId}`;
+  const layerNames: string[] = await readDirectory(directoryPath);
 
   res.status(200).send({
     layers: layerNames.map((layer: string) => {

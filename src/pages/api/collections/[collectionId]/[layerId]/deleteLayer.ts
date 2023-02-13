@@ -1,6 +1,7 @@
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { deleteDirectory } from "@/utils/utils";
+import { baseDirectory } from "@/api-config";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,7 +9,7 @@ export default async function handler(
 ) {
   const { query } = req;
   const { userId, layerId } = query;
-  const directoryPath = `./public/image-processing/${userId}/${layerId}`;
+  const directoryPath = baseDirectory + `/${userId}/${layerId}`;
   await deleteDirectory(directoryPath);
 
   const layers: string[] = await fs.promises.readdir(directoryPath);

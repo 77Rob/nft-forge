@@ -16,17 +16,21 @@ export const createDirectory = (directoryPath: string) => {
   console.log("Done");
 };
 
-export const readDirectory = (directoryPath: string) => {
-  fs.readdir(directoryPath, (error, files) => {
-    if (error) {
-      console.error(`An error occurred while reading the directory: ${error}`);
-      return;
-    }
+export function readDirectory(directoryPath: string): Promise<string[] | []> {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, (error, files) => {
+      if (error) {
+        console.error(
+          `An error occurred while reading the directory: ${error}`
+        );
+        resolve([]);
+      }
 
-    console.log(`Files in directory "${directoryPath}":`);
-    return files;
+      console.log(`Files in directory "${directoryPath}":`);
+      resolve(files);
+    });
   });
-};
+}
 
 export const deleteDirectory = (directoryPath: string) => {
   fs.readdir(directoryPath, (error, files) => {

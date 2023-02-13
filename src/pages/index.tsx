@@ -3,9 +3,5 @@ import FileInput from "../components/FileInput";
 import DragAndDrop from "@/components/DragAndDrop";
 
 export default function Home() {
-  return (
-    <>
-      <DragAndDrop />
-    </>
-  );
+  return <></>;
 }
