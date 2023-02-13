@@ -1,5 +1,13 @@
 export let themes = [
   {
+    name: "🎃  halloween",
+    id: "halloween",
+  },
+  {
+    name: "🤖  cyberpunk",
+    id: "cyberpunk",
+  },
+  {
     name: "🌝  light",
     id: "light",
   },
@@ -10,6 +18,7 @@ export let themes = [
   {
     name: "🧁  cupcake",
     id: "cupcake",
+    Collection,
   },
   {
     name: "🐝  bumblebee",
@@ -32,16 +41,8 @@ export let themes = [
     id: "retro",
   },
   {
-    name: "🤖  cyberpunk",
-    id: "cyberpunk",
-  },
-  {
     name: "🌸  valentine",
     id: "valentine",
-  },
-  {
-    name: "🎃  halloween",
-    id: "halloween",
   },
   {
     name: "🌷  garden",
