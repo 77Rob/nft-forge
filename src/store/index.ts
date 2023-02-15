@@ -1,61 +1,14 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { configReducer, configSlice } from "./config";
+import generatorReducer from "./generator";
 
-interface Image {
-  imageId: string;
-  ipfsUrl: string;
-  rarity?: number;
-}
-
-interface Layer {
-  name: string;
-  rarity?: number;
-  images: Image[];
-}
-
-interface GeneratorState {
-  layers: Layer[];
-  previews: Image[];
-}
-
-const initialState: GeneratorState = {
-  layers: [],
-  previews: [],
-};
-
-export const generatorSlice = createSlice({
-  name: "generator",
-  initialState,
-  reducers: {
-    addLayer(state, action: PayloadAction<string>) {
-      const handleCreateLayer = async () => {
-        await fetch("/api/layers/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            layerName: action.payload,
-            userId: localStorage.getItem("userId"),
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-          });
-      };
-      handleCreateLayer();
-      const newLayer = { layerName: action.payload, layerImages: [] };
-
-      state.layers.push(newLayer);
-    },
-  },
-});
-
-const generatorReducer = generatorSlice.reducer;
+export const { setConfig, updatePreview, handleLayerDown, handleLayerUp } =
+  configSlice.actions;
 
 const store = configureStore({
   reducer: {
-    user: generatorReducer,
+    config: configReducer,
+    generator: generatorReducer,
   },
 });
 

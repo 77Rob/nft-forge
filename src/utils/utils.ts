@@ -185,7 +185,7 @@ export async function refreshConfig({
   const layersPath =
     baseDirectory + `/${userId}/collections/${collectionId}/layers`;
 
-  let layerOrder = config.layerOrder || [];
+  let layerOrder: any[] = config.layerOrder || [];
 
   const layers = await readDirectory(layersPath);
 
@@ -202,7 +202,6 @@ export async function refreshConfig({
       }
     }
   }
-  console.log("newOrder: ", newOrder);
 
   if (newOrder) {
     layerOrder = newOrder;
@@ -238,7 +237,6 @@ export async function refreshConfig({
   newConfig.layers = newLayers;
   const previewDirectoryPath =
     baseDirectory + `/${userId}/collections/${collectionId}/preview`;
-  console.log(newConfig.layers);
   createDirectory(previewDirectoryPath);
 
   const preview = await generateImages({
@@ -248,13 +246,11 @@ export async function refreshConfig({
     width: newConfig.width,
     height: newConfig.height,
   });
-  console.log("preview");
 
   const previewImages = await readDirectory(
     baseDirectory + `/${userId}/collections/${collectionId}/preview/`
   );
 
-  console.log("previewImagesFormated");
   const previewImagesFormatted = previewImages.map((image: string) => {
     return {
       url: `/data/${userId}/collections/${collectionId}/preview/${image}`,

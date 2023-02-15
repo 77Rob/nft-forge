@@ -24,6 +24,7 @@ export interface Config {
   width?: number;
   preview?: any[];
   height: number;
+  refetchId?: number;
 }
 
 export function isConfig(obj: any): obj is Config {

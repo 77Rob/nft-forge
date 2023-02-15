@@ -19,7 +19,7 @@ export default async function handler(
 
   const config: Config = await refreshConfig({ collectionId, userId });
   console.log("CONFIG IS", config);
-  res.status(200).send({
+  return res.status(200).send({
     config,
   });
 }

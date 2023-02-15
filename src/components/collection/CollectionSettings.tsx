@@ -3,6 +3,7 @@ import * as Yup from "yup";
 /* eslint-disable @next/next/no-img-element */
 import { Config, LayerType } from "@/api-config";
 import axios from "axios";
+import { useAppSelector } from "@/store/hooks";
 
 interface Values {
   name: string;
@@ -10,7 +11,7 @@ interface Values {
   amount: number;
   width: number;
   height: number;
-  layers: Array<LayerType>;
+  rarity: Array<number>;
 }
 
 // Define the validation schema for the form values
@@ -28,38 +29,34 @@ const validationSchema = Yup.object().shape({
   ),
 });
 
-// Define the component function
-const CollectionSettings = ({
-  config,
-  handleSubmit,
-}: {
-  config: Config;
-  handleSubmit: (values: Values) => void;
-}) => {
-  // Define the initial values for the form
-  console.log(config);
+const CollectionSettings = ({}: {}) => {
+  const collection = useAppSelector((state) => state.config.config);
+
   const initialValues: Values = {
-    name: config.name || "",
-    description: config.description || "",
-    amount: config.amount || 0,
-    width: config.width || 500,
-    height: config.height || 500,
-    layers: config.layers || [],
+    name: collection.name || "",
+    description: collection.description || "",
+    amount: collection.amount || 0,
+    width: collection.width || 500,
+    height: collection.height || 500,
+    rarity: collection.layers.map((layer) => layer.rarity) || [],
   };
 
-  // Define the onSubmit handler for the form
-  const onSubmit = (values: Values) => {
-    // Do something with the form values, such as sending them to an API
-    console.log(values);
-    handleSubmit(values);
+  const handleSubmit = async (values: any) => {
+    await axios.get("/api/collections/set", {
+      params: {
+        collectionId: collection.name,
+        userId: localStorage.getItem("userId"),
+        config: JSON.stringify({ ...collection, ...values }),
+      },
+    });
   };
 
-  // Return the JSX element for the component
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      enableReinitialize
+      onSubmit={handleSubmit}
     >
       {({
         values,
@@ -141,8 +138,8 @@ const CollectionSettings = ({
           </div>
           <div>
             <h2 className="text-2xl font-medium text-xs text-center">Layers</h2>
-            {config.layers &&
-              config.layers.map((layer, index) => (
+            {collection.layers &&
+              collection.layers.map((layer, index) => (
                 <div key={index} className="flex items-center ">
                   <div className="flex w-full">
                     <h1 className="text-lg mt-1 text-center">{layer.name}</h1>
@@ -155,13 +152,13 @@ const CollectionSettings = ({
                       Rarity
                     </label>
                     <Field
-                      id={`layers[${index}].rarity`}
-                      name={`layers[${index}].rarity`}
+                      id={`rarity[${index}]`}
+                      name={`rarity[${index}]`}
                       type="number"
                       className="input input-primary input-xs w-20"
                     />
                     <ErrorMessage
-                      name={`layers[${index}].rarity`}
+                      name={`rarity[${index}]`}
                       className="text-red-600 text-sm mt-1"
                     />
                   </div>
@@ -172,7 +169,7 @@ const CollectionSettings = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn w-full btn-primary"
+              className="btn w-full btn-primary my-5"
             >
               Save
             </button>
@@ -183,8 +180,8 @@ const CollectionSettings = ({
               await axios.get("/api/collections/generate", {
                 params: {
                   userId: localStorage.getItem("userId"),
-                  collectionId: config.name,
-                  config: JSON.stringify(config),
+                  collectionId: collection.name,
+                  config: JSON.stringify(collection),
                 },
               });
             }}
