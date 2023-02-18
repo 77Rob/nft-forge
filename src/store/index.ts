@@ -1,15 +1,16 @@
-import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { configReducer, configSlice } from "./config";
-import generatorReducer from "./generator";
-
-export const { setConfig, updatePreview, handleLayerDown, handleLayerUp } =
-  configSlice.actions;
+import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
+import configReducer from "./collectionReducer";
+import generatorReducer from "./generatorReducer";
+import thunkMiddleware from "redux-thunk";
+import userReducer from "./userReducer";
 
 const store = configureStore({
   reducer: {
     config: configReducer,
     generator: generatorReducer,
+    user: userReducer,
   },
+  middleware: [thunkMiddleware],
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,4 +1,4 @@
-import { Config } from "@/api-config";
+import { CollectionType } from "@/types/config.dto";
 import { saveConfig } from "@/utils/utils";
 import fs from "fs";
 import { createDirectory } from "@/utils/utils";
@@ -16,12 +16,14 @@ export default async function handle(
     baseDirectory + `/${userId}/collections/${collectionName}/`;
   await createDirectory(directoryPath);
 
-  const config: Config = {
+  const config: CollectionType = {
     layers: [],
     ipfsHash: "",
-    ipfsUrl: "",
+    ipfsUrlImages: "",
+    ipfsUrlMetadata: "",
     name: `${collectionName}`,
     description: "",
+    generated: [],
     image: "",
     width: 500,
     height: 500,

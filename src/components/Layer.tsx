@@ -2,15 +2,15 @@
 import DragAndDrop from "@/components/DragAndDrop";
 import HeaderInput from "@/components/HeaderInput";
 import ScrollableComponent from "@/components/ScrollableComponent";
-import { Config } from "@/api-config";
-import IconTrash from "../icons/IconTrash";
+import IconTrash from "./icons/IconTrash";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { updatePreview } from "@/store";
+import { loadCollection, updatePreview } from "@/store/collectionReducer";
 
 export function Layer({ setRefresh }: { setRefresh: any }) {
   const config = useAppSelector((state) => state.config.config);
   const selected = useAppSelector((state) => state.generator.activeLayer);
+  const id = useAppSelector((state) => state.generator.currentCollection);
 
   const dispatch = useAppDispatch();
   return !config ? (
@@ -34,7 +34,7 @@ export function Layer({ setRefresh }: { setRefresh: any }) {
             {config?.preview?.slice(0, 6).map((layer, index) => {
               const increment = config?.refetchId ? config.refetchId + 1 : 0;
               return (
-                <div key={index + increment} className="col-span-1">
+                <div key={layer.url} className="col-span-1">
                   <img alt="preview" className="max-w-48" src={layer.url} />{" "}
                 </div>
               );
@@ -50,12 +50,11 @@ export function Layer({ setRefresh }: { setRefresh: any }) {
             <div className="grid grid-cols-6 gap-2 mb-12">
               {config?.layers[selected]?.images?.map((image, index) => (
                 <div
-                  key={index}
+                  key={image.name}
                   className="items-center flex flex-col text-center bg-base-200 rounded-xl "
                 >
                   <button
                     onClick={async () => {
-                      config?.layers[selected]?.images?.splice(index, 1);
                       await axios
                         .get("/api/collections/layers/deleteImage", {
                           params: {
@@ -66,7 +65,7 @@ export function Layer({ setRefresh }: { setRefresh: any }) {
                           },
                         })
                         .then(() => {
-                          window.location.reload();
+                          loadCollection(id as string, dispatch);
                         });
                     }}
                     className="btn mr-1 ml-auto my-1 btn-error rounded-lg btn-xs"

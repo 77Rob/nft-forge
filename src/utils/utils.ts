@@ -1,4 +1,5 @@
-import { Config, baseDirectory, configFileName } from "@/api-config";
+import { baseDirectory, configFileName } from "@/api-config";
+import { CollectionType, LayerType } from "@/types/config.dto";
 import * as path from "path";
 import * as fs from "fs";
 import { generateImages } from "./generate";
@@ -60,47 +61,31 @@ export const deleteDirectory = (directoryPath: string) => {
 };
 
 type Data = { [key: string]: string };
-// define a function that takes a directory path as an argument and returns a promise
+
 export async function packFiles(dir: string): Promise<Data | undefined> {
-  // create an empty object to store the file names and paths
   let result: Data = {};
-  // read the directory contents
   let files = await fs.promises.readdir(dir);
-  // get the number of files
   let count = files.length;
-  // check if the directory is empty
   if (count === 0) {
-    // return the empty object
     return result;
   }
-  // loop over the files array
+
   for (let i = 0; i < files.length; i++) {
-    // get the file name
     let file = files[i];
-    // get the full file path
     let filePath = path.join(dir, file);
-    // check if the file is a directory
     let stats = await fs.promises.stat(filePath);
-    // if the file is a directory, call the function recursively
+
     if (stats.isDirectory()) {
       let data = await packFiles(filePath);
-      // merge the data object with the result object
       result = Object.assign(result, data);
-      // decrement the count
       count--;
-      // check if all files are processed
       if (count === 0) {
-        // return the result object
         return result;
       }
     } else {
-      // if the file is not a directory, add its name and path to the result object
       result[file] = filePath;
-      // decrement the count
       count--;
-      // check if all files are processed
       if (count === 0) {
-        // return the result object
         return result;
       }
     }
@@ -130,13 +115,12 @@ export async function ensureDirectoryExistence(
   }
 }
 
-export const getConfig = ({
-  userId,
-  collectionId,
-}: {
+interface GetConfigProps {
   userId: string | string[] | undefined;
   collectionId: string | string[] | undefined;
-}) => {
+}
+
+export const getConfig = ({ userId, collectionId }: GetConfigProps) => {
   if (!userId || !collectionId) return null;
 
   const directoryPath =
@@ -196,7 +180,7 @@ export async function refreshConfig({
   }
 
   for (let i = 0; i < layerOrder.length; i++) {
-    if (layerOrder[i]) {
+    if (layerOrder[i] !== undefined && layerOrder[i] !== null) {
       if (!layers.includes(layerOrder[i])) {
         layerOrder.splice(i, 1);
       }
@@ -238,10 +222,10 @@ export async function refreshConfig({
   const previewDirectoryPath =
     baseDirectory + `/${userId}/collections/${collectionId}/preview`;
   createDirectory(previewDirectoryPath);
-
+  console.log("PREVIEW");
   const preview = await generateImages({
-    layers: newLayers.filter((l) => l.images.length > 0),
-    directory: previewDirectoryPath,
+    layers: newLayers.filter((l) => l.images.length > 0) as LayerType[],
+    directoryImages: previewDirectoryPath,
     amount: 10,
     width: newConfig.width,
     height: newConfig.height,
@@ -259,6 +243,18 @@ export async function refreshConfig({
   });
 
   newConfig.preview = previewImagesFormatted;
+
+  const directoryPath =
+    baseDirectory + `/${userId}/collections/${collectionId}/generated`;
+
+  const generatedImages = await readDirectory(directoryPath);
+
+  const generatedImagesFormatted = generatedImages.map(
+    (image) => `/data/${userId}/collections/${collectionId}/generated/${image}`
+  );
+
+  newConfig.generated = generatedImagesFormatted;
+
   await saveConfig({ userId, collectionId, config: newConfig });
   return newConfig;
 }
@@ -270,13 +266,11 @@ export async function setConfig({
 }: {
   userId: string | string[] | undefined;
   collectionId: string | string[] | undefined;
-  newConfig?: Config;
+  newConfig?: CollectionType;
 }) {
   if (!userId || !collectionId) return null;
-  const config = getConfig({ userId, collectionId });
-  if (!config) return null;
 
-  saveConfig({ userId, collectionId, config: newConfig });
+  await saveConfig({ userId, collectionId, config: newConfig });
   return newConfig;
 }
 

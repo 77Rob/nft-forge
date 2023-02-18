@@ -1,35 +1,25 @@
 import { useEffect, useState } from "react";
-import ArtPage from "./ArtPage";
+import Traits from "./Traits";
 import { useRouter } from "next/router";
-import { setConfig } from "@/store/index";
-import { setCurrentCollection } from "@/store/generator";
+import { setConfig, loadCollection } from "@/store/collectionReducer";
+import Generated from "@/pages/collection/[id]/Generated";
+import { setActiveStep, setCurrentCollection } from "@/store/generatorReducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import axios from "axios";
+import IPFS from "@/pages/collection/[id]/IPFS";
+import Contract from "@/pages/collection/[id]/Contract";
+import Metadata from "./Metadata";
 
 const CollectionPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const dispatch = useAppDispatch();
-  const [refresh, setRefresh] = useState(0);
-  const activeLayer = useAppSelector((state) => state.generator.activeLayer);
-  const collection = useAppSelector((state) => state.config.config);
-  const [activeStep, setActiveStep] = useState(0);
+  const activeStep = useAppSelector((state) => state.generator.activeStep);
 
   useEffect(() => {
-    const loadCollection = async () => {
-      const collectionDetails = await axios.get("/api/collections/details", {
-        params: {
-          collectionId: id,
-          userId: localStorage.getItem("userId"),
-        },
-      });
-      console.log(collectionDetails);
-
-      dispatch(setConfig(collectionDetails.data.config));
-    };
     if (id) {
       dispatch(setCurrentCollection(id as string));
-      loadCollection();
+      loadCollection(id as string, dispatch);
     }
   }, [id]);
 
@@ -37,38 +27,55 @@ const CollectionPage = () => {
     <div></div>
   ) : (
     <div>
-      <ul className=" flex justify-center steps mx-auto steps-horizontal">
+      <ul className=" flex justify-center tabs mx-auto mb-2 pt-2 tabs-boxed">
         <li
-          onClick={() => setActiveStep(0)}
-          className={`step cursor-pointer step-primary`}
+          onClick={() => dispatch(setActiveStep(0))}
+          className={`tab cursor-pointer w-40 step-primary ${
+            activeStep == 0 && "tab-active"
+          }`}
         >
-          Generate Art
+          Traits
         </li>
         <li
-          className={`step cursor-pointer ${activeStep > 0 && "step-primary"}`}
-          onClick={() => setActiveStep(1)}
+          className={`tab cursor-pointer w-40 ${
+            activeStep == 1 && "tab-active"
+          }`}
+          onClick={() => dispatch(setActiveStep(1))}
+        >
+          Generated Art
+        </li>
+        <li
+          className={`tab cursor-pointer w-40 ${
+            activeStep == 2 && "tab-active"
+          }`}
+          onClick={() => dispatch(setActiveStep(2))}
+        >
+          IPFS
+        </li>
+        <li
+          className={`tab cursor-pointer w-40 ${
+            activeStep == 3 && "tab-active"
+          }`}
+          onClick={() => dispatch(setActiveStep(3))}
         >
           Metadata
         </li>
         <li
-          className={`step cursor-pointer ${activeStep > 1 && "step-primary"}`}
-          onClick={() => setActiveStep(2)}
+          className={`tab cursor-pointer w-40 ${
+            activeStep == 4 && "tab-active"
+          }`}
+          onClick={() => dispatch(setActiveStep(4))}
         >
-          Smart Contract
-        </li>
-        <li
-          className={`step cursor-pointer ${activeStep > 2 && "step-primary"}`}
-          onClick={() => setActiveStep(3)}
-        >
-          Deploy
+          Contract
         </li>
       </ul>
-      {activeStep === 0 && <ArtPage />}
+      {activeStep === 0 && <Traits />}
+      {activeStep === 1 && <Generated />}
+      {activeStep === 2 && <IPFS />}
+      {activeStep === 3 && <Metadata />}
+      {activeStep === 4 && <Contract />}
     </div>
   );
 };
 
 export default CollectionPage;
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
-}

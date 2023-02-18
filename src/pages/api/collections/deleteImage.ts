@@ -7,13 +7,12 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { collectionId, layerName, userId, imageName } = req.query;
-  const imagePath =
-    baseDirectory +
-    `/${userId}/collections/${collectionId}/layers/${layerName}/${imageName}`;
-
-  await fs.unlink(imagePath, async (err) => {
+  const { imagePath } = req.query;
+  console.log("IMAGE PATH", imagePath);
+  await fs.unlink(`./public${imagePath}`, async (err) => {
     if (err) {
+      console.log("ERROR", err);
+
       return res.status(500).send({ message: "Image not deleted", error: err });
     }
 

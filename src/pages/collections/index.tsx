@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserCollections from "@/components/collection/UserCollections";
+import UserCollections from "@/components/UserCollections";
 import axios from "axios";
 import Router from "next/router";
 

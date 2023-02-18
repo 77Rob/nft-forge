@@ -1,9 +1,10 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 /* eslint-disable @next/next/no-img-element */
-import { Config, LayerType } from "@/api-config";
 import axios from "axios";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setActiveStep } from "@/store/generatorReducer";
+import { generateImages } from "@/store/collectionReducer";
 
 interface Values {
   name: string;
@@ -31,7 +32,7 @@ const validationSchema = Yup.object().shape({
 
 const CollectionSettings = ({}: {}) => {
   const collection = useAppSelector((state) => state.config.config);
-
+  const dispatch = useAppDispatch();
   const initialValues: Values = {
     name: collection.name || "",
     description: collection.description || "",
@@ -58,15 +59,7 @@ const CollectionSettings = ({}: {}) => {
       enableReinitialize
       onSubmit={handleSubmit}
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
+      {({ handleSubmit, isSubmitting }) => (
         <Form
           onSubmit={handleSubmit}
           className="shadow-2xl py-4 bg-base-200 mx-2 px-4 rounded-lg my-4"
@@ -176,15 +169,7 @@ const CollectionSettings = ({}: {}) => {
           </div>
           <div
             className="btn w-full btn-primary"
-            onClick={async () => {
-              await axios.get("/api/collections/generate", {
-                params: {
-                  userId: localStorage.getItem("userId"),
-                  collectionId: collection.name,
-                  config: JSON.stringify(collection),
-                },
-              });
-            }}
+            onClick={() => generateImages(collection, dispatch)}
           >
             Generate
           </div>

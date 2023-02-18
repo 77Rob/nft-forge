@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { setConfig } from "@/utils/utils";
-import { isConfig } from "@/api-config";
+import { isCollection } from "@/types/config.dto";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   console.log(config);
   console.log(newConfig);
 
-  if (isConfig(newConfig)) {
+  if (isCollection(newConfig)) {
     const updatedConfig = await setConfig({ collectionId, userId, newConfig });
     res.status(200).send({
       updatedConfig,

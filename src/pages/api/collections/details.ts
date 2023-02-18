@@ -8,17 +8,16 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { baseDirectory, configFileName } from "@/api-config";
 import fs from "fs";
-import { Config } from "@/api-config";
+import { CollectionType } from "@/types/config.dto";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { query } = req;
   const { userId, collectionId } = query;
-  console.log(query);
 
-  const config: Config = await refreshConfig({ collectionId, userId });
-  console.log("CONFIG IS", config);
+  const config: CollectionType = await refreshConfig({ collectionId, userId });
+
   return res.status(200).send({
     config,
   });

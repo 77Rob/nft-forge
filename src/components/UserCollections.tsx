@@ -1,5 +1,5 @@
 import axios from "axios";
-import CollectionCard from "./collection/index";
+import CollectionCard from "./CollectionCard";
 import { useEffect, useState } from "react";
 
 const UserCollections = () => {
