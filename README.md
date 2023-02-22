@@ -1,5 +1,5 @@
 # NFT Forge
-
+# [Demo](https://vimeo.com/801231653)
 # Welcome to the world of generative NFT collections! Bring your NFT vision to life with a tool that makes it easy to generate art for and create NFT collections.
 
 In this project, images in a generative NFT collection are constructed from different traits that can be combined and blended to create unique, one-of-a-kind NFTs. Think of it as building an NFT from the ground up, piece by piece. For example, a cryptopunk picture might be a combination of 5 different image layers, such as a hat, cigar, body, glasses, beard, and earrings.
