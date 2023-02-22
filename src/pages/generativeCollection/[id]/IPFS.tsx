@@ -5,9 +5,11 @@ import {
   updateWeb3StorageKey,
 } from "@/store/userReducer";
 import {
+  uploadImagesToIPFSPinata,
   uploadImagesToIPFSWeb3Storage,
+  uploadMetadataToIPFSPinata,
   uploadMetadataToIPFSWeb3Storage,
-} from "@/store/basicCollectionReducer";
+} from "@/store/generativeCollectionReducer";
 
 import { useEffect, useState } from "react";
 
@@ -16,7 +18,9 @@ const IPFS = () => {
   const dispatch = useAppDispatch();
   const [newPinataKey, setNewPinataKey] = useState<string>("");
   const [newWeb3StorageKey, setNewWeb3StorageKey] = useState<string>("");
-  const collection = useAppSelector((state) => state.basicCollection.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
 
   useEffect(() => {
     initUser(localStorage.getItem("userId"), dispatch);
@@ -27,6 +31,59 @@ const IPFS = () => {
     <div className="">
       <div className="space-y-2 mx-auto bg-base-200 max-w-xl p-2 rounded-xl">
         <h1 className="text-xl font-semibold text-center">IPFS</h1>
+        {/* Pinata */}
+        {/* <div className="space-x-4 flex items-center">
+          <label className="label">Pinata API Key: </label>
+          <h1>{user.pinataKey ? user.pinataKey : "Key not specified"}</h1>
+        </div>
+
+        <div className=" flex items-center space-x-4">
+          <label className="label">New Pinata API Key: </label>
+          <input
+            value={newPinataKey}
+            className="input flex-1 input-primary input-sm"
+            onChange={(e) => setNewPinataKey(e.target.value)}
+          />
+          <button
+            onClick={() =>
+              updatePinataApiKey(
+                `${localStorage.getItem("userId")}`,
+                newPinataKey,
+                dispatch
+              )
+            }
+            className="btn btn-primary btn-sm"
+          >
+            Update
+          </button>
+        </div>
+        <div className="flex flex-col gap-4 items-stretch  justify-center">
+          <button
+            onClick={() =>
+              uploadImagesToIPFSPinata({
+                collectionId: collection.name,
+                userId: `${localStorage.getItem("userId")}`,
+                dispatch: dispatch,
+              })
+            }
+            className="btn btn-primary btn-sm mx-auto"
+          >
+            Upload Images Using Pinata
+          </button>
+          <button
+            disabled={collection.ipfsUrlImages ? false : true}
+            onClick={() =>
+              uploadMetadataToIPFSPinata({
+                collectionId: collection.name,
+                userId: `${localStorage.getItem("userId")}`,
+                dispatch: dispatch,
+              })
+            }
+            className="btn btn-primary btn-sm mx-auto"
+          >
+            Upload Metadata Using Pinata
+          </button>
+        </div> */}
 
         {/* Web3 Storage */}
         <div className="space-x-4 flex items-center">

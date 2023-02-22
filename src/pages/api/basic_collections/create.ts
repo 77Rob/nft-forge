@@ -1,4 +1,4 @@
-import { GenerativeCollectionType } from "@/types/config.dto";
+import { CollectionType } from "@/types/config.dto";
 import { saveConfig } from "@/utils/utils";
 import fs from "fs";
 import { createDirectory } from "@/utils/utils";
@@ -13,21 +13,16 @@ export default async function handle(
   const { query } = req;
   const { userId, collectionName } = query;
   const directoryPath =
-    baseDirectory + `/${userId}/collections/${collectionName}/`;
+    baseDirectory + `/${userId}/basic_collections/${collectionName}/`;
   await createDirectory(directoryPath);
 
-  const config: GenerativeCollectionType = {
-    layers: [],
+  const config: CollectionType = {
     ipfsHash: "",
     ipfsUrlImages: "",
     ipfsUrlMetadata: "",
     name: `${collectionName}`,
     description: "",
-    generated: [],
-    image: "",
-    width: 500,
-    height: 500,
-    amount: 100,
+    images: [],
   };
 
   const jsonString = JSON.stringify(config, null, 2);

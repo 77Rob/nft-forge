@@ -4,6 +4,8 @@ import {
   getConfig,
   saveConfig,
   refreshConfig,
+  saveBasicConfig,
+  getBasicConfig,
 } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { baseDirectory, configFileName } from "@/api-config";
@@ -23,19 +25,20 @@ export default async function handler(
   const { query } = req;
   const { userId, collectionId } = query;
 
-  const directoryPath = `./public/data/${userId}/collections/${collectionId}/generated`;
-
-  let config: CollectionType = await getConfig({ collectionId, userId });
+  const directoryPath = `./public/data/${userId}/basic_collections/${collectionId}/images`;
+  console.log(directoryPath);
+  let config: CollectionType = await getBasicConfig({ collectionId, userId });
   let userConfig = await readFile(
     baseDirectory + `/${userId}/user.json`,
     "utf-8"
   );
 
   let userConfigParsed = JSON.parse(userConfig.toString());
+
   const client = new Web3Storage({ token: userConfigParsed.web3StorageKey });
   const files = await getFilesFromPath(directoryPath);
   const rootCid = await client.put(files as Iterable<Filelike>);
-  config.ipfsUrlImages = `${rootCid}/generated`;
-  await saveConfig({ collectionId, userId, config });
-  res.send({ url: `${rootCid}/generated` });
+  config.ipfsUrlImages = `${rootCid}/images`;
+  await saveBasicConfig({ collectionId, userId, config });
+  res.send({ url: `${rootCid}/images` });
 }

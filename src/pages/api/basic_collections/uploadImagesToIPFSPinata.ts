@@ -14,7 +14,6 @@ import FormData from "form-data";
 import rfs from "recursive-fs";
 import basePathConverter from "base-path-converter";
 import got from "got";
-import { Filelike, getFilesFromPath, Web3Storage } from "web3.storage";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +21,7 @@ export default async function handler(
 ) {
   const { query } = req;
   const { userId, collectionId } = query;
-
+  const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   const directoryPath = `./public/data/${userId}/collections/${collectionId}/generated`;
 
   let config: CollectionType = await getConfig({ collectionId, userId });
@@ -32,10 +31,34 @@ export default async function handler(
   );
 
   let userConfigParsed = JSON.parse(userConfig.toString());
-  const client = new Web3Storage({ token: userConfigParsed.web3StorageKey });
-  const files = await getFilesFromPath(directoryPath);
-  const rootCid = await client.put(files as Iterable<Filelike>);
-  config.ipfsUrlImages = `${rootCid}/generated`;
-  await saveConfig({ collectionId, userId, config });
-  res.send({ url: `${rootCid}/generated` });
+
+  var status = 0;
+  try {
+    const { dirs, files } = await rfs.read(directoryPath);
+    let data = new FormData();
+    for (const file of files) {
+      data.append(`file`, fs.createReadStream(file), {
+        filepath: basePathConverter(directoryPath, file),
+      });
+    }
+    const response = await got(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": `multipart/form-data; `,
+        Authorization: userConfigParsed.pinataKey,
+      },
+      body: data,
+    }).on("uploadProgress", (progress) => {
+      console.log(progress);
+    });
+    console.log(JSON.parse(response.body));
+  } catch (error) {
+    console.log("error");
+    console.log(error);
+  }
+
+  //   config.ipfsUrlImages =
+  return res.status(200).send({
+    config,
+  });
 }

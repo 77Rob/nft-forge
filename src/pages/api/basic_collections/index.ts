@@ -9,7 +9,7 @@ export default async function handle(
 ) {
   const { query } = req;
   const { userId } = query;
-  const directoryPath = baseDirectory + `/${userId}/collections`;
+  const directoryPath = baseDirectory + `/${userId}/basic_collections`;
   try {
     const collections = await readDirectory(directoryPath);
     res

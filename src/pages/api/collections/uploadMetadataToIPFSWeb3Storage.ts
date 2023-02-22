@@ -47,8 +47,8 @@ export default async function handler(
   const client = new Web3Storage({ token: userConfigParsed.web3StorageKey });
   const files = await getFilesFromPath(metadataDirectory);
   const rootCid = await client.put(files as Iterable<Filelike>);
-  config.ipfsUrlMetadata = rootCid;
+  config.ipfsUrlMetadata = `${rootCid}/metadata`;
   console.log(rootCid);
   await saveConfig({ collectionId, userId, config });
-  res.send(config.ipfsUrlMetadata);
+  res.send({ url: config.ipfsUrlMetadata });
 }

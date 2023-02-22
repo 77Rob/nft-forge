@@ -7,19 +7,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import { GenerativeCollectionType, LayerType } from "@/types/config.dto";
-
-const handleUpdateOrder = async (collectionId: string, order: LayerType[]) => {
-  const params = {
-    collectionId: collectionId,
-    userId: localStorage.getItem("userId"),
-    order: order,
-  };
-
-  await axios.get("/api/collections/updateOrder", {
-    params: params,
-  });
-};
+import { CollectionType, LayerType } from "@/types/config.dto";
 
 const initialState = {
   config: {
@@ -38,40 +26,21 @@ const initialState = {
     preview: [],
     height: 0,
     refetchId: 0,
-  } as GenerativeCollectionType,
+  } as CollectionType,
 };
 
 export const generativeCollectionSlice = createSlice({
   name: "generator",
   initialState,
   reducers: {
-    setConfig: (state, action: PayloadAction<GenerativeCollectionType>) => {
+    setConfig: (state, action: PayloadAction<CollectionType>) => {
       state.config = action.payload;
-    },
-    handleCreateNewLayer: (state, action: PayloadAction<LayerType>) => {
-      state.config.layers.push(action.payload);
-    },
-    updatePreview: (state) => {
-      state.config.preview = state.config.preview?.reverse();
-
-      handleUpdateOrder(state.config.name, state.config.layers);
     },
     handleSetImageIPFSUrl: (state, action: PayloadAction<string>) => {
       state.config.ipfsUrlImages = action.payload;
     },
-    handleLayerDown: (state, action: PayloadAction<number>) => {
-      const { payload } = action;
-
-      const newLayers = state.config.layers;
-      const temp = newLayers[payload];
-      newLayers[payload] = newLayers[payload + 1];
-      newLayers[payload + 1] = temp;
-      state.config.layers = newLayers;
-
-      handleUpdateOrder(state.config.name, state.config.layers);
-    },
     deleteGeneratedImageAction: (state, action: PayloadAction<string>) => {
-      state.config.generated = state.config.generated?.filter(
+      state.config.images = state.config.images?.filter(
         (item) => item !== action.payload
       );
     },
@@ -81,19 +50,10 @@ export const generativeCollectionSlice = createSlice({
     handleLoadMetadata: (state, action: PayloadAction<any>) => {
       state.config.metadata = action.payload;
     },
-    handleLayerUp: (state, action: PayloadAction<number>) => {
-      const { payload } = action;
-      const newLayers = state.config.layers;
-      const temp = newLayers[payload];
-      newLayers[payload] = newLayers[payload - 1];
-      newLayers[payload - 1] = temp;
-      state.config.layers = newLayers;
 
-      handleUpdateOrder(state.config.name, state.config.layers);
-    },
-    handleGenerateImages: (state, action: PayloadAction<any>) => {
+    handleUploadImages: (state, action: PayloadAction<any>) => {
       const { payload } = action;
-      state.config.generated = payload;
+      state.config.images = payload;
     },
   },
 });
@@ -101,7 +61,7 @@ export const generativeCollectionSlice = createSlice({
 export const loadCollection = async (id: string, dispatch: any) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
-  const collectionDetails = await axios.get("/api/collections/details", {
+  const collectionDetails = await axios.get("/api/basic_collections/details", {
     params: {
       collectionId: id,
       userId: localStorage.getItem("userId"),
@@ -114,7 +74,7 @@ export const loadCollection = async (id: string, dispatch: any) => {
 export const deleteGeneratedImage = (image: any, dispatch: any) => {
   return async () => {
     await axios
-      .get("/api/collections/deleteImage", {
+      .get("/api/basic_collections/deleteImage", {
         params: {
           imagePath: image,
         },
@@ -130,12 +90,15 @@ export const uploadImagesToIPFSPinata = async ({
   userId,
   dispatch,
 }: UploadImagesToIPFSWeb3StorageProps) => {
-  const ipfsUrl = await axios.get("/api/collections/uploadImagesToIPFSPinata", {
-    params: {
-      collectionId: collectionId,
-      userId: userId,
-    },
-  });
+  const ipfsUrl = await axios.get(
+    "/api/basic_collections/uploadImagesToIPFSPinata",
+    {
+      params: {
+        collectionId: collectionId,
+        userId: userId,
+      },
+    }
+  );
   dispatch(handleSetImageIPFSUrl(ipfsUrl.data));
 };
 
@@ -151,7 +114,7 @@ export const uploadImagesToIPFSWeb3Storage = async ({
   dispatch,
 }: UploadImagesToIPFSWeb3StorageProps) => {
   const ipfsUrl = await axios.get(
-    "/api/collections/uploadImagesToIPFSWeb3Storage",
+    "/api/basic_collections/uploadImagesToIPFSWeb3Storage",
     {
       params: {
         collectionId: collectionId,
@@ -161,20 +124,6 @@ export const uploadImagesToIPFSWeb3Storage = async ({
   );
 
   dispatch(handleSetImageIPFSUrl(ipfsUrl.data.url));
-};
-
-export const generateImages = async (
-  collection: GenerativeCollectionType,
-  dispatch: any
-) => {
-  const generated = await axios.get("/api/collections/generate", {
-    params: {
-      userId: localStorage.getItem("userId"),
-      collectionId: collection.name,
-    },
-  });
-  dispatch(setActiveStep(1));
-  dispatch(handleGenerateImages(generated.data));
 };
 
 interface LoadMetadataProps {
@@ -188,7 +137,7 @@ export const loadMetadata = async ({
   userId,
   dispatch,
 }: LoadMetadataProps) => {
-  const metadata = await axios.get("/api/collections/metadata", {
+  const metadata = await axios.get("/api/basic_collections/metadata", {
     params: {
       userId: userId,
       collectionId: collectionId,
@@ -209,7 +158,7 @@ export const uploadMetadataToIPFSPinata = async ({
   dispatch,
 }: UploadMetadataToIPFSProps) => {
   const ipfsUrl = await axios.get(
-    "/api/collections/uploadMetadataToIPFSPinata",
+    "/api/basic_collections/uploadMetadataToIPFSPinata",
     {
       params: {
         collectionId: collectionId,
@@ -227,7 +176,7 @@ export const uploadMetadataToIPFSWeb3Storage = async ({
 }: UploadMetadataToIPFSProps) => {
   await loadMetadata({ collectionId, userId, dispatch });
   const ipfsUrl = await axios.get(
-    "/api/collections/uploadMetadataToIPFSWeb3Storage",
+    "/api/basic_collections/uploadMetadataToIPFSWeb3Storage",
     {
       params: {
         collectionId: collectionId,
@@ -240,13 +189,9 @@ export const uploadMetadataToIPFSWeb3Storage = async ({
 
 export const {
   setConfig,
-  updatePreview,
-  handleLayerDown,
-  handleLayerUp,
+  handleUploadImages,
   handleSetImageIPFSUrl,
   deleteGeneratedImageAction,
-  handleGenerateImages,
-  handleCreateNewLayer,
   handleLoadMetadata,
   handleSetMetadataIPFSUrl,
 } = generativeCollectionSlice.actions;

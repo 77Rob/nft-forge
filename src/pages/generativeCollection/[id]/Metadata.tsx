@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
-import { loadMetadata } from "@/store/basicCollectionReducer";
+import { loadMetadata } from "@/store/generativeCollectionReducer";
 import { useEffect } from "react";
 
 const Metadata = () => {

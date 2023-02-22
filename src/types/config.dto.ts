@@ -9,7 +9,7 @@ export interface LayerType {
   images: Image[];
 }
 
-export interface CollectionType {
+export interface GenerativeCollectionType {
   layers: LayerType[];
   ipfsHash?: string;
   ipfsUrlImages?: string;
@@ -22,8 +22,21 @@ export interface CollectionType {
   preview?: any[];
   metadata?: any;
   height: number;
+  images?: any[];
   generated?: any[];
   refetchId?: number;
+}
+
+export interface CollectionType {
+  ipfsHash?: string;
+  ipfsUrlImages?: string;
+  ipfsUrlMetadata?: string;
+  name: string;
+  description?: string;
+  width?: number;
+  preview?: any[];
+  metadata?: any;
+  images?: any[];
 }
 
 export function isCollection(obj: any): obj is CollectionType {

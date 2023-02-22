@@ -4,12 +4,14 @@ import generatorReducer from "./generatorReducer";
 import thunkMiddleware from "redux-thunk";
 import userReducer from "./userReducer";
 import contractReducer from "./contractReducer";
+import basicCollectionReducer from "./basicCollectionReducer";
 
 const store = configureStore({
   reducer: {
     generativeCollection: generativeCollectionReducer,
     generator: generatorReducer,
     user: userReducer,
+    basicCollection: basicCollectionReducer,
     contract: contractReducer,
   },
   middleware: [thunkMiddleware],

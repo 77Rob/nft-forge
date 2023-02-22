@@ -300,3 +300,80 @@ export function sortByProperty<T, K extends keyof T>(
   // return the sorted copy
   return copy;
 }
+
+export const getBasicConfig = ({ userId, collectionId }: GetConfigProps) => {
+  if (!userId || !collectionId) return null;
+
+  const directoryPath =
+    baseDirectory + `/${userId}/basic_collections/${collectionId}/`;
+  const configFilePath = directoryPath + configFileName;
+  const config = JSON.parse(fs.readFileSync(configFilePath, "utf-8"));
+  return config;
+};
+
+export const saveBasicConfig = ({
+  userId,
+  collectionId,
+  config,
+}: {
+  userId: string | string[] | undefined;
+  collectionId: string | string[] | undefined;
+  config: any;
+}) => {
+  if (!userId || !collectionId) return null;
+
+  const directoryPath =
+    baseDirectory + `/${userId}/basic_collections/${collectionId}/`;
+  const configFilePath = directoryPath + configFileName;
+  const jsonString = JSON.stringify(config, null, 2);
+
+  fs.writeFile(configFilePath, jsonString, (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+};
+
+export async function refreshBasicConfig({
+  userId,
+  collectionId,
+}: {
+  userId: string | string[] | undefined;
+  collectionId: string | string[] | undefined;
+}) {
+  if (!userId || !collectionId) return null;
+  const config = getBasicConfig({ userId, collectionId });
+  if (!config) return null;
+
+  let newConfig = { ...config };
+
+  const directoryPath =
+    baseDirectory + `/${userId}/basic_collections/${collectionId}/images`;
+
+  const images = await readDirectory(directoryPath);
+
+  const imagesFormatted = images.map(
+    (image) =>
+      `/data/${userId}/basic_collections/${collectionId}/images/${image}`
+  );
+
+  newConfig.images = imagesFormatted;
+
+  await saveBasicConfig({ userId, collectionId, config: newConfig });
+  return newConfig;
+}
+
+export async function setBasicConfig({
+  userId,
+  collectionId,
+  newConfig,
+}: {
+  userId: string | string[] | undefined;
+  collectionId: string | string[] | undefined;
+  newConfig?: CollectionType;
+}) {
+  if (!userId || !collectionId) return null;
+
+  await saveBasicConfig({ userId, collectionId, config: newConfig });
+  return newConfig;
+}

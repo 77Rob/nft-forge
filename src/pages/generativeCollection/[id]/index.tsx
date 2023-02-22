@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import Images from "./Images";
+import Traits from "./Traits";
 import { useRouter } from "next/router";
-import { setConfig, loadCollection } from "@/store/basicCollectionReducer";
+import { setConfig, loadCollection } from "@/store/generativeCollectionReducer";
+import Generated from "./Generated";
 import { setActiveStep, setCurrentCollection } from "@/store/generatorReducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import axios from "axios";
-import IPFS from "@/pages/collection/[id]/IPFS";
-import Contract from "@/pages/collection/[id]/Contract";
+import IPFS from "./IPFS";
+import Contract from "./Contract";
 import Metadata from "./Metadata";
 
 const CollectionPage = () => {
@@ -33,7 +34,7 @@ const CollectionPage = () => {
             activeStep == 0 && "tab-active"
           }`}
         >
-          Images
+          Traits
         </li>
         <li
           className={`tab cursor-pointer w-40 ${
@@ -41,7 +42,7 @@ const CollectionPage = () => {
           }`}
           onClick={() => dispatch(setActiveStep(1))}
         >
-          IPFS
+          Generated Art
         </li>
         <li
           className={`tab cursor-pointer w-40 ${
@@ -49,7 +50,7 @@ const CollectionPage = () => {
           }`}
           onClick={() => dispatch(setActiveStep(2))}
         >
-          Metadata
+          IPFS
         </li>
         <li
           className={`tab cursor-pointer w-40 ${
@@ -57,13 +58,22 @@ const CollectionPage = () => {
           }`}
           onClick={() => dispatch(setActiveStep(3))}
         >
+          Metadata
+        </li>
+        <li
+          className={`tab cursor-pointer w-40 ${
+            activeStep == 4 && "tab-active"
+          }`}
+          onClick={() => dispatch(setActiveStep(4))}
+        >
           Contract
         </li>
       </ul>
-      {activeStep === 0 && <Images />}
-      {activeStep === 1 && <IPFS />}
-      {activeStep === 2 && <Metadata />}
-      {activeStep === 3 && <Contract />}
+      {activeStep === 0 && <Traits />}
+      {activeStep === 1 && <Generated />}
+      {activeStep === 2 && <IPFS />}
+      {activeStep === 3 && <Metadata />}
+      {activeStep === 4 && <Contract />}
     </div>
   );
 };

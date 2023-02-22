@@ -206,12 +206,77 @@ const contractSlice = createSlice({
         state.contract.onlyOwnerCanMint = true;
       }
     },
+    handleSwitchActivateAutomatically(state, action) {
+      if (action.payload == false) {
+        state.contract.activateAutomatically = false;
+      } else {
+        state.contract.activateAutomatically = true;
+      }
+    },
+    handleAddPayoutDestination(state) {
+      state.contract.payoutDestinations.push({
+        address: "0x0000000000000000000000000000000000000000",
+        amount: 0,
+      });
+    },
+    handleUpdatePayoutDestinationAmount(state, action) {
+      state.contract.payoutDestinations[action.payload.index] = {
+        amount: action.payload.amount,
+        address:
+          state.contract.payoutDestinations[action.payload.index].address,
+      };
+    },
+    handleUpdatePayoutDestinationAddress(state, action) {
+      state.contract.payoutDestinations[action.payload.index] = {
+        amount: state.contract.payoutDestinations[action.payload.index].amount,
+        address: action.payload.value,
+      };
+    },
+    handleRemovePayoutDestination(state, action) {
+      state.contract.payoutDestinations.splice(action.payload.index, 1);
+    },
+    handleChangeAmountAllowedForOwner(state, action) {
+      state.contract.amountAllowedForOwner = action.payload;
+    },
+    handleUpdateAllowlistDestinationAddress(state, action) {
+      state.contract.allowlistDestinations[action.payload.index] = {
+        address: action.payload.value,
+        amount:
+          state.contract.allowlistDestinations[action.payload.index].amount,
+      };
+    },
+    handleUpdateAllowlistDestinationAmount(state, action) {
+      state.contract.allowlistDestinations[action.payload.index] = {
+        amount: action.payload.amount,
+        address:
+          state.contract.allowlistDestinations[action.payload.index].address,
+      };
+    },
+    handleAddAllowlistDestination(state) {
+      state.contract.allowlistDestinations.push({
+        address: "0x0000000000000000000000000000000000000000",
+        amount: 0,
+      });
+    },
+    handleRemoveAllowlistDestination(state, action) {
+      state.contract.allowlistDestinations.splice(action.payload.index, 1);
+    },
   },
 });
 
 export const {
   handleStartCompile,
+  handleUpdateAllowlistDestinationAddress,
+  handleUpdateAllowlistDestinationAmount,
+  handleChangeAmountAllowedForOwner,
+  handleAddAllowlistDestination,
+  handleRemovePayoutDestination,
+  handleAddPayoutDestination,
+  handleUpdatePayoutDestinationAmount,
+  handleUpdatePayoutDestinationAddress,
+  handleSwitchActivateAutomatically,
   handleCompilerReady,
+  handleRemoveAllowlistDestination,
   handleCompileSuccess,
   handleContractDeployed,
   handleCompileError,

@@ -4,12 +4,15 @@ import {
   getConfig,
   saveConfig,
   refreshConfig,
+  createDirectory,
+  getBasicConfig,
+  saveBasicConfig,
 } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { baseDirectory, configFileName } from "@/api-config";
 import fs from "fs";
 import { CollectionType } from "@/types/config.dto";
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 import FormData from "form-data";
 import rfs from "recursive-fs";
 import basePathConverter from "base-path-converter";
@@ -22,10 +25,20 @@ export default async function handler(
 ) {
   const { query } = req;
   const { userId, collectionId } = query;
+  const metadataFilePath = `./public/data/${userId}/basic_collections/${collectionId}/metadata.json`;
+  const metadataDirectory = `./public/data/${userId}/basic_collections/${collectionId}/metadata/`;
 
-  const directoryPath = `./public/data/${userId}/collections/${collectionId}/generated`;
+  let metadata = JSON.parse(await readFile(metadataFilePath, "utf8"));
 
-  let config: CollectionType = await getConfig({ collectionId, userId });
+  await createDirectory(metadataDirectory);
+
+  for (let i = 0; i < metadata.length; i++) {
+    await writeFile(
+      metadataDirectory + metadata[i].name + ".json",
+      JSON.stringify(metadata[i])
+    );
+  }
+  let config: CollectionType = await getBasicConfig({ collectionId, userId });
   let userConfig = await readFile(
     baseDirectory + `/${userId}/user.json`,
     "utf-8"
@@ -33,9 +46,10 @@ export default async function handler(
 
   let userConfigParsed = JSON.parse(userConfig.toString());
   const client = new Web3Storage({ token: userConfigParsed.web3StorageKey });
-  const files = await getFilesFromPath(directoryPath);
+  const files = await getFilesFromPath(metadataDirectory);
   const rootCid = await client.put(files as Iterable<Filelike>);
-  config.ipfsUrlImages = `${rootCid}/generated`;
-  await saveConfig({ collectionId, userId, config });
-  res.send({ url: `${rootCid}/generated` });
+  config.ipfsUrlMetadata = `${rootCid}/metadata`;
+
+  await saveBasicConfig({ collectionId, userId, config });
+  res.send({ url: config.ipfsUrlMetadata });
 }

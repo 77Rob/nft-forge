@@ -1,8 +1,8 @@
 import axios from "axios";
-import CollectionCard from "./CollectionCard";
+import GenerativeCollectionCard from "./GenerativeCollectionCard";
 import { useEffect, useState } from "react";
 
-const UserCollections = () => {
+const GenerativeUserCollections = () => {
   const [collections, setCollections] = useState<string[]>();
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const UserCollections = () => {
   ) : (
     <div className="grid w-full grid-cols-3 gap-4">
       {collections.map((collection) => (
-        <CollectionCard key={collection} name={collection} />
+        <GenerativeCollectionCard key={collection} name={collection} />
       ))}
     </div>
   );
 };
 
-export default UserCollections;
+export default GenerativeUserCollections;

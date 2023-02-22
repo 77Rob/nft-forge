@@ -1,30 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { createCompilerInput, useCompiler } from "@/compiler/index";
-import AllowList from "@/components/AllowList";
-import ContractOptions from "@/components/ContractOptions";
-import PayoutDestinations from "@/components/PayoutDestinations";
-import WalletConnectButton from "@/components/WalletConnectButton";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
+  getValidContractName,
   downloadDependenciesForSource,
   generateContractSource,
-  getValidContractName,
+  getBaseURI,
 } from "@/solidity-codegen";
 import {
   ContractState,
-  ScopedAccessToken,
   handleCompileSuccess,
-  handleCompilerReady,
-  handleContractDeployed,
-  handleLoadCollection,
   handleStartCompile,
   initialState,
+  handleContractDeployed,
+  handleLoadCollection,
+  handleCompilerReady,
+  ScopedAccessToken,
 } from "@/store/contractReducer";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { toVerifyRequest, verifyContract } from "@/utils/verify";
-import { Interface } from "@ethersproject/abi";
-import { ContractFactory } from "ethers";
-import { useCallback, useEffect, useMemo } from "react";
+import WalletConnectButton from "@/components/WalletConnectButton";
 import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
+import { deployContract } from "@/utils";
+import { ContractFactory } from "ethers";
+import axios from "axios";
+import { toVerifyRequest, verifyContract } from "@/utils/verify";
+import ContractOptions from "@/components/ContractOptions";
+import { Interface } from "@ethersproject/abi";
+import PayoutDestinations from "@/components/PayoutDestinations";
+import AllowList from "@/components/AllowList";
 type Address = string;
 
 export const OPEN_ZEPPELIN_VERSION = "4.3.2";
@@ -82,9 +85,13 @@ const Contract = () => {
       );
 
       dispatch(handleCompilerReady({ files: files }));
-
+      console.log("files");
+      console.log(files);
       const output = await compiler.compile(files);
-
+      console.log(state.compiler.files);
+      console.log(
+        output.contracts[sourceName][contractName].evm.bytecode.object
+      );
       dispatch(
         handleCompileSuccess({
           value: output,
@@ -96,7 +103,7 @@ const Contract = () => {
 
     main();
   }, [compiler, state.contract]);
-
+  console.log(state.contract);
   const handleDeploy = useCallback(() => {
     async function main() {
       const { sourceName, contractName, contracts } = state.compiler;
