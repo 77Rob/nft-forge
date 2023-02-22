@@ -8,7 +8,7 @@ const GenerativeUserCollections = () => {
   useEffect(() => {
     const loadCollections = async () => {
       const userId = localStorage.getItem("userId");
-      const collections = await axios.get(`/api/basic_collections/`, {
+      const collections = await axios.get(`/api/collections/`, {
         params: {
           userId,
         },

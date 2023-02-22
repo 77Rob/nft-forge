@@ -173,6 +173,9 @@ const Contract = () => {
       <ContractOptions />
       <PayoutDestinations />
       <AllowList />
+      <h1>
+        {state.compiler.status === "done" && "Contract compiled successfully"}
+      </h1>
       <div className="flex space-x-4">
         <button
           type="submit"

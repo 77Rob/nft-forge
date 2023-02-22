@@ -31,6 +31,7 @@ const Traits = () => {
       handleCreateNewLayer({ name: newLayerName, rarity: 100, images: [] })
     );
     setNewLayerName("");
+    window.location.reload();
   };
 
   return !collection ? (

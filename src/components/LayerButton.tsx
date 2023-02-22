@@ -31,6 +31,7 @@ export function LayerButton({ index }: { index: number }): JSX.Element {
         userId: localStorage.getItem("userId"),
       },
     });
+    window.location.reload();
   };
 
   return (

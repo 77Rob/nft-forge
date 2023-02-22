@@ -108,7 +108,7 @@ const Contract = () => {
     async function main() {
       const { sourceName, contractName, contracts } = state.compiler;
       const mainContract = contracts[sourceName][contractName];
-      console.log(mainContract);
+      console.log(createCompilerInput(state.compiler.files));
       const {
         abi,
         evm: { bytecode },
@@ -145,6 +145,7 @@ const Contract = () => {
   const handleVerifyContract = useCallback(() => {
     async function main() {
       const { contracts, contractName, sourceName } = state.compiler;
+      console.log(createCompilerInput(state.compiler.files));
 
       const contractInterface = new Interface(
         contracts[sourceName][contractName].abi
@@ -160,7 +161,7 @@ const Contract = () => {
         constructorArguments: deploymentArguments,
         contractAddress: state.config.contractAddress || "",
         contractName: state.compiler.contractName,
-        sourceCode: createCompilerInput(state.compiler.files),
+        sourceCode: JSON.stringify(createCompilerInput(state.compiler.files)),
         sourceName: state.compiler.contractName + ".sol",
       });
 
@@ -180,6 +181,13 @@ const Contract = () => {
       <ContractOptions />
       <PayoutDestinations />
       <AllowList />
+      <h1>
+        {state.compiler.status === "done" && "Contract compiled successfully"}
+      </h1>
+      <h1>
+        {state.config.deployed === true &&
+          `Contract deployed successfully. Contract address - ${state.config.contractAddress}`}
+      </h1>
       <div className="flex space-x-4">
         <button
           type="submit"
@@ -190,7 +198,7 @@ const Contract = () => {
         </button>
         <button
           disabled={
-            !(state.compiler.status === "done") && !(status == "connected")
+            !(state.compiler.status === "done" && status == "connected")
           }
           className="btn btn-primary"
           onClick={() => handleDeploy()}

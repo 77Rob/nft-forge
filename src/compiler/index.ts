@@ -67,9 +67,9 @@ export function wrapCompilerModule(
     },
   };
 }
-const COMPILER_URL =
-  "https://www.721.so/solc/soljson-v0.8.9+commit.e5eed63a.js";
 
+const COMPILER_URL =
+  "https://binaries.soliditylang.org/bin/soljson-v0.8.9+commit.e5eed63a.js";
 /**
  * Download and evaluate the compiler script
  *
