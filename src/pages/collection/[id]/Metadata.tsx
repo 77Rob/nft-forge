@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
-import { loadMetadata } from "@/store/collectionReducer";
+import { loadMetadata } from "@/store/generativeCollectionReducer";
 import { useEffect } from "react";
 
 const Metadata = () => {
   const router = useRouter();
   const { id } = router.query;
   const dispatch = useAppDispatch();
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
   useEffect(() => {
     if (id) {
       loadMetadata({

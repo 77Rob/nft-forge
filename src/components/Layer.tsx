@@ -5,10 +5,13 @@ import ScrollableComponent from "@/components/ScrollableComponent";
 import IconTrash from "./icons/IconTrash";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loadCollection, updatePreview } from "@/store/collectionReducer";
+import {
+  loadCollection,
+  updatePreview,
+} from "@/store/generativeCollectionReducer";
 
 export function Layer({ setRefresh }: { setRefresh: any }) {
-  const config = useAppSelector((state) => state.config.config);
+  const config = useAppSelector((state) => state.generativeCollection.config);
   const selected = useAppSelector((state) => state.generator.activeLayer);
   const id = useAppSelector((state) => state.generator.currentCollection);
 
@@ -86,7 +89,9 @@ export function Layer({ setRefresh }: { setRefresh: any }) {
             </div>
           </ScrollableComponent>
           <DragAndDrop
-            onCompleted={() => setRefresh((refresh: any) => !refresh)}
+            onCompleted={() => {
+              loadCollection(id as string, dispatch);
+            }}
             layerId={config?.layers[selected]?.name}
             collectionId={config?.name?.toString() || ""}
           />

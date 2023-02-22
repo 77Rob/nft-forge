@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Traits from "./Traits";
 import { useRouter } from "next/router";
-import { setConfig, loadCollection } from "@/store/collectionReducer";
+import { setConfig, loadCollection } from "@/store/generativeCollectionReducer";
 import Generated from "@/pages/collection/[id]/Generated";
 import { setActiveStep, setCurrentCollection } from "@/store/generatorReducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";

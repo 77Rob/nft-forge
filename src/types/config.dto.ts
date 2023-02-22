@@ -6,7 +6,6 @@ export interface Image {
 export interface LayerType {
   name: string;
   rarity: number;
-  id: number;
   images: Image[];
 }
 

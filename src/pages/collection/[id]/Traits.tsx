@@ -8,14 +8,16 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setCurrentCollection } from "@/store/generatorReducer";
 import { LayerButton } from "../../../components/LayerButton";
-
+import { handleCreateNewLayer } from "@/store/generativeCollectionReducer";
 const Traits = () => {
   const router = useRouter();
   const { id } = router.query;
   const [newLayerName, setNewLayerName] = useState("");
   const [refresh, setRefresh] = useState(0);
   const dispatch = useAppDispatch();
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
 
   const createNewLayer = async () => {
     await axios.get("/api/collections/layers/create", {
@@ -25,8 +27,10 @@ const Traits = () => {
         userId: localStorage.getItem("userId"),
       },
     });
+    dispatch(
+      handleCreateNewLayer({ name: newLayerName, rarity: 100, images: [] })
+    );
     setNewLayerName("");
-    setRefresh((refresh) => refresh + 1);
   };
 
   return !collection ? (
@@ -59,7 +63,7 @@ const Traits = () => {
           </button>
         </div>
 
-        <Layer key={1} setRefresh={setRefresh} />
+        <Layer setRefresh={setRefresh} />
         <div>
           <CollectionSettings />
         </div>

@@ -6,7 +6,10 @@ import { LayerType } from "@/types/config.dto";
 import ConfirmationButton from "@/components/ConfirmationButton";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setActiveLayer } from "@/store/generatorReducer";
-import { handleLayerDown, handleLayerUp } from "@/store/collectionReducer";
+import {
+  handleLayerDown,
+  handleLayerUp,
+} from "@/store/generativeCollectionReducer";
 
 export function LayerButton({ index }: { index: number }): JSX.Element {
   const dispatch = useAppDispatch();
@@ -14,7 +17,9 @@ export function LayerButton({ index }: { index: number }): JSX.Element {
   const currentCollection = useAppSelector(
     (state) => state.generator.currentCollection
   );
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
   const layer = collection.layers[index];
   console.log(layer, index);
 

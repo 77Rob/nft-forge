@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setActiveStep } from "@/store/generatorReducer";
-import { generateImages } from "@/store/collectionReducer";
+import { generateImages } from "@/store/generativeCollectionReducer";
 
 interface Values {
   name: string;
@@ -31,7 +31,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const CollectionSettings = ({}: {}) => {
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
   const dispatch = useAppDispatch();
   const initialValues: Values = {
     name: collection.name || "",

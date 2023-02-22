@@ -3,13 +3,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import TrashIcon from "@/components/icons/IconTrash";
-import { deleteGeneratedImage } from "@/store/collectionReducer";
+import { deleteGeneratedImage } from "@/store/generativeCollectionReducer";
 import { setActiveStep } from "@/store/generatorReducer";
 
 const Generated = () => {
   const dispatch = useAppDispatch();
 
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
 
   return (
     <div>

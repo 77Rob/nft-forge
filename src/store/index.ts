@@ -1,14 +1,16 @@
 import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
-import configReducer from "./collectionReducer";
+import generativeCollectionReducer from "./generativeCollectionReducer";
 import generatorReducer from "./generatorReducer";
 import thunkMiddleware from "redux-thunk";
 import userReducer from "./userReducer";
+import contractReducer from "./contractReducer";
 
 const store = configureStore({
   reducer: {
-    config: configReducer,
+    generativeCollection: generativeCollectionReducer,
     generator: generatorReducer,
     user: userReducer,
+    contract: contractReducer,
   },
   middleware: [thunkMiddleware],
 });

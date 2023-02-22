@@ -9,7 +9,7 @@ import {
   uploadImagesToIPFSWeb3Storage,
   uploadMetadataToIPFSPinata,
   uploadMetadataToIPFSWeb3Storage,
-} from "@/store/collectionReducer";
+} from "@/store/generativeCollectionReducer";
 
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,9 @@ const IPFS = () => {
   const dispatch = useAppDispatch();
   const [newPinataKey, setNewPinataKey] = useState<string>("");
   const [newWeb3StorageKey, setNewWeb3StorageKey] = useState<string>("");
-  const collection = useAppSelector((state) => state.config.config);
+  const collection = useAppSelector(
+    (state) => state.generativeCollection.config
+  );
 
   useEffect(() => {
     initUser(localStorage.getItem("userId"), dispatch);
@@ -30,7 +32,7 @@ const IPFS = () => {
       <div className="space-y-2 mx-auto bg-base-200 max-w-xl p-2 rounded-xl">
         <h1 className="text-xl font-semibold text-center">IPFS</h1>
         {/* Pinata */}
-        <div className="space-x-4 flex items-center">
+        {/* <div className="space-x-4 flex items-center">
           <label className="label">Pinata API Key: </label>
           <h1>{user.pinataKey ? user.pinataKey : "Key not specified"}</h1>
         </div>
@@ -81,7 +83,7 @@ const IPFS = () => {
           >
             Upload Metadata Using Pinata
           </button>
-        </div>
+        </div> */}
 
         {/* Web3 Storage */}
         <div className="space-x-4 flex items-center">
@@ -113,8 +115,8 @@ const IPFS = () => {
         </div>
         <div className="flex flex-col gap-4 items-center justify-center">
           <button
-            onClick={() =>
-              uploadImagesToIPFSWeb3Storage({
+            onClick={async () =>
+              await uploadImagesToIPFSWeb3Storage({
                 collectionId: collection.name,
                 userId: `${localStorage.getItem("userId")}`,
                 dispatch: dispatch,
@@ -126,8 +128,8 @@ const IPFS = () => {
           </button>
           <button
             disabled={collection.ipfsUrlImages ? false : true}
-            onClick={() =>
-              uploadMetadataToIPFSWeb3Storage({
+            onClick={async () =>
+              await uploadMetadataToIPFSWeb3Storage({
                 collectionId: collection.name,
                 userId: `${localStorage.getItem("userId")}`,
                 dispatch: dispatch,

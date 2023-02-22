@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
-  CollectionType as CollectionType,
+  CollectionType as GenerativeCollectionType,
   LayerType,
 } from "@/types/config.dto";
 
@@ -41,15 +41,18 @@ const initialState = {
     preview: [],
     height: 0,
     refetchId: 0,
-  } as CollectionType,
+  } as GenerativeCollectionType,
 };
 
-export const collectionSlice = createSlice({
+export const generativeCollectionSlice = createSlice({
   name: "generator",
   initialState,
   reducers: {
-    setConfig: (state, action: PayloadAction<CollectionType>) => {
+    setConfig: (state, action: PayloadAction<GenerativeCollectionType>) => {
       state.config = action.payload;
+    },
+    handleCreateNewLayer: (state, action: PayloadAction<LayerType>) => {
+      state.config.layers.push(action.payload);
     },
     updatePreview: (state) => {
       state.config.preview = state.config.preview?.reverse();
@@ -111,21 +114,6 @@ export const loadCollection = async (id: string, dispatch: any) => {
   dispatch(setConfig(collectionDetails.data.config));
 };
 
-export const {
-  setConfig,
-  updatePreview,
-  handleLayerDown,
-  handleLayerUp,
-  handleSetImageIPFSUrl,
-  deleteGeneratedImageAction,
-  handleGenerateImages,
-  handleLoadMetadata,
-  handleSetMetadataIPFSUrl,
-} = collectionSlice.actions;
-
-const configReducer = collectionSlice.reducer;
-export default configReducer;
-
 export const deleteGeneratedImage = (image: any, dispatch: any) => {
   return async () => {
     await axios
@@ -174,11 +162,12 @@ export const uploadImagesToIPFSWeb3Storage = async ({
       },
     }
   );
+
   dispatch(handleSetImageIPFSUrl(ipfsUrl.data));
 };
 
 export const generateImages = async (
-  collection: CollectionType,
+  collection: GenerativeCollectionType,
   dispatch: any
 ) => {
   const generated = await axios.get("/api/collections/generate", {
@@ -239,6 +228,7 @@ export const uploadMetadataToIPFSWeb3Storage = async ({
   userId,
   dispatch,
 }: UploadMetadataToIPFSProps) => {
+  await loadMetadata({ collectionId, userId, dispatch });
   const ipfsUrl = await axios.get(
     "/api/collections/uploadMetadataToIPFSWeb3Storage",
     {
@@ -250,3 +240,19 @@ export const uploadMetadataToIPFSWeb3Storage = async ({
   );
   dispatch(handleSetMetadataIPFSUrl(ipfsUrl.data));
 };
+
+export const {
+  setConfig,
+  updatePreview,
+  handleLayerDown,
+  handleLayerUp,
+  handleSetImageIPFSUrl,
+  deleteGeneratedImageAction,
+  handleGenerateImages,
+  handleCreateNewLayer,
+  handleLoadMetadata,
+  handleSetMetadataIPFSUrl,
+} = generativeCollectionSlice.actions;
+
+const generativeCollectionReducer = generativeCollectionSlice.reducer;
+export default generativeCollectionReducer;

@@ -7,13 +7,10 @@ const Header = () => {
       <h1 className="text-xl font-bold">NFT Forge</h1>
       <div>
         <Link href="/">
-          <button className="btn btn-ghost py-0">Home</button>
+          <button className="btn btn-ghost py-0">Collections</button>
         </Link>
-        <Link href="/collections">
-          <button className="btn btn-ghost py-0">Artwork</button>
-        </Link>
-        <Link href="/contract">
-          <button className="btn btn-ghost py-0">Smart Contract</button>
+        <Link href="/docs">
+          <button className="btn btn-ghost py-0">Docs</button>
         </Link>
       </div>
       <ThemeChange />
