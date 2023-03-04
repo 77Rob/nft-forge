@@ -57,7 +57,7 @@ const Traits = () => {
         </ScrollableComponent>
         <DragAndDropBasic
           collectionId={`${id}`}
-          onCompleted={() => console.log("comp")}
+          onCompleted={() => loadCollection(`${id}`, dispatch)}
         />
       </div>
 
